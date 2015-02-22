@@ -7,14 +7,15 @@ class TransactionsController < ApplicationController
       charge = Stripe::Charge.create(
         amount: book.price,
         currency: "usd",
-        card: token
+        card: token,
         description: current_user.email)
-      @sale = Book.sales.create!(
+      @sale = book.sales.create!(
         buyer_email: current_user.email)
       redirect_to pickup_url(guid: @sale.guid)
     rescue Stripe::CardError => e
       @error = e
       redirect_to book_path(book), notice: @error
+    end
   end
 
   def pickup
